@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crux Hold Heatmap</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+  <div class="container">
+    <h1>Crux Hold Heatmap</h1>
+
+    <div class="input-section">
+      <div id="apiKeyContainer" class="section">
+        <h2>Enter Your Crux API Key</h2>
+        <div class="input-group">
+          <input type="password" id="apiKeyInput" placeholder="Enter your API key">
+          <button id="loadGymsButton">Load Gyms</button>
+          <div id="gymLoadingIndicator" class="loading-indicator" style="display: none;">
+            <div class="spinner"></div>
+            <span>Loading gyms...</span>
+          </div>
+        </div>
+        <p class="api-key-instructions">To get your API key:
+          <br>1. Open the <a href="https://www.cruxapp.ca/app" target="_blank">Crux app</a>
+          <br>2. Go to Profile -> Settings -> API Authentication
+          <br>3. Copy the API key
+        </p>
+      </div>
+
+      <div id="gymSelectionContainer" style="display: none;">
+        <select id="gymSelect">
+          <option value="">Select a gym...</option>
+        </select>
+      </div>
+
+      <div id="wallGridContainer" style="display: none;">
+        <h2>Select a Wall</h2>
+        <div id="wallGrid" class="wall-grid"></div>
+      </div>
+
+      <div id="progressContainer" style="display: none;">
+        <div class="progress-bar">
+          <div id="progressBar" class="progress"></div>
+        </div>
+        <p id="progressText">Loading climbs...</p>
+        <p class="progress-note">This may take a minute on larger gyms...</p>
+      </div>
+
+      <div id="errorMessage" class="error-message" style="display: none;"></div>
+    </div>
+
+    <div id="visualizationSection" class="visualization-section" style="display: none;">
+      <div class="canvas-container">
+        <div class="controls">
+          <div class="control-group">
+            <label for="lineWidth">Line Width:</label>
+            <input type="range" id="lineWidth" min="1" max="10" value="5" step="0.5">
+            <span id="lineWidthValue">5px</span>
+          </div>
+          <div class="control-group">
+            <label for="colorScheme">Color Scheme:</label>
+            <select id="colorScheme">
+              <option value="blue-yellow">Blue to Yellow</option>
+              <option value="blue-red">Blue to Red</option>
+              <option value="red-dark">Gray to Red</option>
+            </select>
+          </div>
+          <div class="control-group">
+            <label for="scaling">Scaling:</label>
+            <select id="scaling">
+              <option value="linear">Linear</option>
+              <option value="logarithmic" selected>Logarithmic</option>
+            </select>
+          </div>
+          <div class="gradient-legend">
+            <div class="gradient-bar"></div>
+            <div class="gradient-labels">
+              <span>Least Used</span>
+              <span>Most Used</span>
+            </div>
+          </div>
+          <button id="startOverButton" class="start-over-button">Start Over</button>
+        </div>
+        <canvas id="wallCanvas"></canvas>
+      </div>
+      <div class="info-panel">
+        <div id="holdInfo" class="hold-info">
+          <h3>Hold Information</h3>
+          <p>Click on a hold to see details</p>
+          <div id="holdDetails" style="display: none;">
+            <h4>Hold Usage</h4>
+            <p id="holdUsageCount"></p>
+            <h4>Climbs Using This Hold</h4>
+            <div id="climbsList" class="climbs-list"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="tooltip" class="tooltip" style="display: none;"></div>
+  <script src="script.js"></script>
+</body>
+
+</html>
