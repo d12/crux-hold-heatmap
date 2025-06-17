@@ -72,8 +72,9 @@ class HeatmapVisualizer {
       case 'blue-red':
         gradientBar.style.background = 'linear-gradient(to right, hsl(240, 100%, 50%), hsl(0, 100%, 50%))';
         break;
-      case 'red-dark':
-        gradientBar.style.background = 'linear-gradient(to right, rgb(50, 50, 50), rgb(255, 50, 50))';
+      case 'red-yellow-green':
+        // Dark red to yellow to deep green, with green covering more of the gradient
+        gradientBar.style.background = 'linear-gradient(to right, hsl(0, 80%, 30%) 0%, hsl(55, 100%, 60%) 30%, hsl(120, 80%, 35%) 100%)';
         break;
     }
   }
@@ -430,11 +431,24 @@ class HeatmapVisualizer {
       case 'blue-red':
         const hue2 = (1 - intensity) * 240; // 240 (blue) to 0 (red)
         return `hsl(${hue2}, 100%, 50%)`;
-      case 'red-dark':
-        const red = Math.round(50 + 205 * intensity);
-        const green = Math.round(50 * (1 - intensity));
-        const blue = Math.round(50 * (1 - intensity));
-        return `rgb(${red}, ${green}, ${blue})`;
+      case 'red-yellow-green': {
+        // 0-0.3: dark red to yellow, 0.3-1: yellow to deep green
+        let h, s, l;
+        if (intensity < 0.3) {
+          // Red to yellow
+          const t = intensity / 0.3;
+          h = 0 + (55 - 0) * t;
+          s = 80 + (100 - 80) * t;
+          l = 30 + (60 - 30) * t;
+        } else {
+          // Yellow to deep green
+          const t = (intensity - 0.3) / 0.7;
+          h = 55 + (120 - 55) * t;
+          s = 100 + (80 - 100) * t;
+          l = 60 + (35 - 60) * t;
+        }
+        return `hsl(${h}, ${s}%, ${l}%)`;
+      }
     }
   }
 
