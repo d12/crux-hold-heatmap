@@ -65,45 +65,49 @@
     <div id="visualizationSection" class="visualization-section" style="display: none;">
       <div class="canvas-container">
         <div class="controls">
-          <div class="control-group">
-            <label for="lineWidth">Line Width:</label>
-            <input type="range" id="lineWidth" min="1" max="10" value="5" step="0.5">
-            <span id="lineWidthValue">5px</span>
+          <div class="controls-header">
+            <h3>Display Settings</h3>
+            <button id="toggleControls" class="toggle-button">▼</button>
           </div>
-          <div class="control-group">
-            <label for="colorScheme">Color Scheme:</label>
-            <select id="colorScheme">
-              <option value="blue-yellow">Blue to Yellow</option>
-              <option value="blue-red">Blue to Red</option>
-              <option value="red-yellow-green">Red to Yellow to Green</option>
-            </select>
-          </div>
-          <div class="control-group">
-            <label for="scaling">Scaling:</label>
-            <select id="scaling">
-              <option value="linear">Linear</option>
-              <option value="logarithmic" selected>Logarithmic</option>
-            </select>
-          </div>
-          <div class="gradient-legend">
-            <div class="gradient-bar"></div>
-            <div class="gradient-labels">
-              <span>Least Used</span>
-              <span>Most Used</span>
+          <div id="controlsContent" class="controls-content" style="display: none;">
+            <div class="control-group">
+              <label for="lineWidth">Line Width:</label>
+              <input type="range" id="lineWidth" min="1" max="10" value="5" step="0.5">
+              <span id="lineWidthValue">5px</span>
             </div>
+            <div class="control-group">
+              <label for="colorScheme">Color Scheme:</label>
+              <select id="colorScheme">
+                <option value="blue-yellow">Blue to Yellow</option>
+                <option value="blue-red">Blue to Red</option>
+                <option value="red-yellow-green" selected>Red to Yellow to Green</option>
+              </select>
+            </div>
+            <div class="control-group">
+              <label for="scaling">Scaling:</label>
+              <select id="scaling">
+                <option value="linear">Linear</option>
+                <option value="logarithmic" selected>Logarithmic</option>
+              </select>
+            </div>
+            <div class="gradient-legend">
+              <div class="gradient-bar"></div>
+              <div class="gradient-labels">
+                <span>Least Used</span>
+                <span>Most Used</span>
+              </div>
+            </div>
+            <button id="startOverButton" class="start-over-button">Start Over</button>
           </div>
-          <button id="startOverButton" class="start-over-button">Start Over</button>
         </div>
         <canvas id="wallCanvas"></canvas>
       </div>
       <div class="info-panel">
         <div id="holdInfo" class="hold-info">
-          <h3>Hold Information</h3>
+          <h3 id="holdInfoHeader">Hold Information</h3>
           <p id="holdInstructions">Click on a hold to see details</p>
+          <div id="selectedHoldImage" class="selected-hold-image" style="display: none;"></div>
           <div id="holdDetails" style="display: none;">
-            <div id="selectedHoldImage" class="selected-hold-image"></div>
-            <h4>Hold Usage</h4>
-            <p id="holdUsageCount"></p>
             <h4>Climbs Using This Hold</h4>
             <div id="climbsList" class="climbs-list"></div>
           </div>

@@ -16,7 +16,7 @@ class HeatmapVisualizer {
     this.imageWidth = 0;
     this.imageHeight = 0;
     this.lineWidth = 5;
-    this.colorScheme = 'blue-yellow';
+    this.colorScheme = 'red-yellow-green';
     this.scaling = 'logarithmic';
 
     // Set the API key in the input if it exists
@@ -37,6 +37,18 @@ class HeatmapVisualizer {
     this.canvas.addEventListener('mouseout', () => this.handleMouseOut());
     this.canvas.addEventListener('click', (e) => this.handleCanvasClick(e));
     document.getElementById('startOverButton').addEventListener('click', () => this.startOver());
+
+    // Toggle controls visibility
+    const toggleButton = document.getElementById('toggleControls');
+    const controlsContent = document.getElementById('controlsContent');
+    const controlsHeader = document.querySelector('.controls-header');
+
+    controlsHeader.addEventListener('click', () => {
+      const isCollapsed = controlsContent.style.display === 'none';
+      controlsContent.style.display = isCollapsed ? 'flex' : 'none';
+      toggleButton.textContent = isCollapsed ? '▼' : '▶';
+      toggleButton.classList.toggle('collapsed', !isCollapsed);
+    });
 
     // Line width slider
     const lineWidthSlider = document.getElementById('lineWidth');
@@ -547,7 +559,6 @@ class HeatmapVisualizer {
 
   updateHoldInfo(holdId) {
     const holdDetails = document.getElementById('holdDetails');
-    const holdUsageCount = document.getElementById('holdUsageCount');
     const climbsList = document.getElementById('climbsList');
     const holdInstructions = document.getElementById('holdInstructions');
     const selectedHoldImage = document.getElementById('selectedHoldImage');
@@ -588,10 +599,10 @@ class HeatmapVisualizer {
           height
         );
 
-        selectedHoldImage.innerHTML = `<img src="${tempCanvas.toDataURL()}" alt="Selected hold">`;
+        selectedHoldImage.innerHTML = `<img src="${tempCanvas.toDataURL()}" alt="Selected hold" style="width: 100%; height: 100%; object-fit: contain;">`;
+        selectedHoldImage.style.display = 'grid';
+        document.getElementById('holdInfoHeader').textContent = `Selected Hold:`;
       }
-
-      holdUsageCount.textContent = `Used in ${climbIds.length} climbs`;
 
       climbsList.innerHTML = '';
 
@@ -631,6 +642,8 @@ class HeatmapVisualizer {
       holdDetails.style.display = 'none';
       holdInstructions.style.display = 'block';
       selectedHoldImage.innerHTML = '';
+      document.getElementById('holdInfoHeader').textContent = `Hold Information`;
+      selectedHoldImage.style.display = 'none';
     }
   }
 
