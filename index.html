@@ -16,10 +16,12 @@
     </div>
   </div>
   <div class="container">
-    <h1 style="margin-bottom: 8px !important">Crux Hold Heatmap</h1>
-    <div style="text-align: center;">
-      <a href="https://github.com/d12/crux-hold-heatmap" target="_blank"
-        style="font-size: 0.85em; color: #555; text-decoration: underline dotted;">View Source Code on GitHub</a>
+    <div class="header">
+      <h1 style="margin-bottom: 8px !important">Crux Hold Heatmap</h1>
+      <div style="text-align: center;">
+        <a href="https://github.com/d12/crux-hold-heatmap" target="_blank"
+          style="font-size: 0.85em; color: #555; text-decoration: underline dotted;">View Source Code on GitHub</a>
+      </div>
     </div>
 
     <div class="input-section">
@@ -64,12 +66,17 @@
 
     <div id="visualizationSection" class="visualization-section" style="display: none;">
       <div class="canvas-container">
+        <div class="gradient-legend">
+          <span class="gradient-label">Least Used</span>
+          <div class="gradient-bar"></div>
+          <span class="gradient-label">Most Used</span>
+        </div>
+        <canvas id="wallCanvas"></canvas>
+      </div>
+      <div class="info-panel">
         <div class="controls">
-          <div class="controls-header">
-            <h3>Display Settings</h3>
-            <button id="toggleControls" class="toggle-button">▼</button>
-          </div>
-          <div id="controlsContent" class="controls-content" style="display: none;">
+          <h3>Display Settings</h3>
+          <div class="controls-content">
             <div class="control-group">
               <label for="lineWidth">Line Width:</label>
               <input type="range" id="lineWidth" min="1" max="10" value="5" step="0.5">
@@ -90,19 +97,8 @@
                 <option value="logarithmic" selected>Logarithmic</option>
               </select>
             </div>
-            <div class="gradient-legend">
-              <div class="gradient-bar"></div>
-              <div class="gradient-labels">
-                <span>Least Used</span>
-                <span>Most Used</span>
-              </div>
-            </div>
-            <button id="startOverButton" class="start-over-button">Start Over</button>
           </div>
         </div>
-        <canvas id="wallCanvas"></canvas>
-      </div>
-      <div class="info-panel">
         <div id="holdInfo" class="hold-info">
           <h3 id="holdInfoHeader">Hold Information</h3>
           <p id="holdInstructions">Click on a hold to see details</p>

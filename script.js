@@ -36,19 +36,6 @@ class HeatmapVisualizer {
     this.canvas.addEventListener('mousemove', (e) => this.handleMouseMove(e));
     this.canvas.addEventListener('mouseout', () => this.handleMouseOut());
     this.canvas.addEventListener('click', (e) => this.handleCanvasClick(e));
-    document.getElementById('startOverButton').addEventListener('click', () => this.startOver());
-
-    // Toggle controls visibility
-    const toggleButton = document.getElementById('toggleControls');
-    const controlsContent = document.getElementById('controlsContent');
-    const controlsHeader = document.querySelector('.controls-header');
-
-    controlsHeader.addEventListener('click', () => {
-      const isCollapsed = controlsContent.style.display === 'none';
-      controlsContent.style.display = isCollapsed ? 'flex' : 'none';
-      toggleButton.textContent = isCollapsed ? '▼' : '▶';
-      toggleButton.classList.toggle('collapsed', !isCollapsed);
-    });
 
     // Line width slider
     const lineWidthSlider = document.getElementById('lineWidth');
@@ -371,7 +358,14 @@ class HeatmapVisualizer {
     return new Promise((resolve, reject) => {
       const img = new Image();
       img.crossOrigin = 'anonymous';
-      img.onload = () => resolve(img);
+      img.onload = () => {
+        this.image = img;
+        this.imageWidth = img.width;
+        this.imageHeight = img.height;
+        this.canvas.width = img.width;
+        this.canvas.height = img.height;
+        resolve(img);
+      };
       img.onerror = reject;
       img.src = url;
     });
