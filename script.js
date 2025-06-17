@@ -828,5 +828,11 @@ class HeatmapVisualizer {
 
 // Initialize the visualizer when the page loads
 document.addEventListener('DOMContentLoaded', () => {
+  // Check if device is mobile
+  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768;
+  if (isMobile) {
+    document.getElementById('mobileWarning').style.display = 'flex';
+  }
+
   new HeatmapVisualizer();
 });

@@ -454,3 +454,45 @@ canvas {
     transform: rotate(360deg);
   }
 }
+
+.mobile-warning {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.9);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.mobile-warning-content {
+  background-color: white;
+  padding: 30px;
+  border-radius: 8px;
+  max-width: 90%;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.mobile-warning-content h2 {
+  color: #dc3545;
+  margin-top: 0;
+  margin-bottom: 15px;
+}
+
+.mobile-warning-content p {
+  color: #333;
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+@media (min-width: 768px) {
+  .mobile-warning {
+    display: none !important;
+  }
+}
