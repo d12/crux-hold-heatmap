@@ -549,11 +549,47 @@ class HeatmapVisualizer {
     const holdDetails = document.getElementById('holdDetails');
     const holdUsageCount = document.getElementById('holdUsageCount');
     const climbsList = document.getElementById('climbsList');
+    const holdInstructions = document.getElementById('holdInstructions');
+    const selectedHoldImage = document.getElementById('selectedHoldImage');
 
     if (holdId) {
       const climbIds = this.holdUsage.get(holdId);
 
       if (!climbIds) return;
+
+      // Hide instructions and show details
+      holdInstructions.style.display = 'none';
+      holdDetails.style.display = 'block';
+
+      // Update hold image
+      const holdData = this.holdPositions.get(holdId);
+      if (holdData && holdData.mask) {
+        const bounds = this.calculateBoundingBox(holdData.mask);
+        const padding = 20;
+
+        // Create a temporary canvas to extract the hold image
+        const tempCanvas = document.createElement('canvas');
+        const tempCtx = tempCanvas.getContext('2d');
+        const width = bounds.maxX - bounds.minX + padding * 2;
+        const height = bounds.maxY - bounds.minY + padding * 2;
+        tempCanvas.width = width;
+        tempCanvas.height = height;
+
+        // Draw the hold with padding
+        tempCtx.drawImage(
+          this.image,
+          bounds.minX - padding,
+          bounds.minY - padding,
+          width,
+          height,
+          0,
+          0,
+          width,
+          height
+        );
+
+        selectedHoldImage.innerHTML = `<img src="${tempCanvas.toDataURL()}" alt="Selected hold">`;
+      }
 
       holdUsageCount.textContent = `Used in ${climbIds.length} climbs`;
 
@@ -591,10 +627,10 @@ class HeatmapVisualizer {
           climbsList.appendChild(climbItem);
         }
       });
-
-      holdDetails.style.display = 'block';
     } else {
       holdDetails.style.display = 'none';
+      holdInstructions.style.display = 'block';
+      selectedHoldImage.innerHTML = '';
     }
   }
 
@@ -690,6 +726,9 @@ class HeatmapVisualizer {
     for (const [oldId, newId] of holdMappings) {
       this.holdPositions.delete(oldId);
     }
+
+    // Update top holds after merging
+    this.updateTopHolds();
   }
 
   calculateBoundingBox(mask) {
@@ -727,6 +766,63 @@ class HeatmapVisualizer {
       intersectionArea / area1,
       intersectionArea / area2
     );
+  }
+
+  updateTopHolds() {
+    const topHoldsGrid = document.getElementById('topHoldsGrid');
+    topHoldsGrid.innerHTML = '';
+
+    // Sort holds by usage count
+    const sortedHolds = Array.from(this.holdUsage.entries())
+      .sort((a, b) => b[1].length - a[1].length)
+      .slice(0, 100); // Show top 100 holds
+
+    // Create hold cards
+    sortedHolds.forEach(([holdId, climbIds]) => {
+      const holdData = this.holdPositions.get(holdId);
+      if (!holdData || !holdData.mask) return;
+
+      const bounds = this.calculateBoundingBox(holdData.mask);
+      const padding = 20; // Add padding around the hold
+
+      // Create a temporary canvas to extract the hold image
+      const tempCanvas = document.createElement('canvas');
+      const tempCtx = tempCanvas.getContext('2d');
+      const width = bounds.maxX - bounds.minX + padding * 2;
+      const height = bounds.maxY - bounds.minY + padding * 2;
+      tempCanvas.width = width;
+      tempCanvas.height = height;
+
+      // Draw the hold with padding
+      tempCtx.drawImage(
+        this.image,
+        bounds.minX - padding,
+        bounds.minY - padding,
+        width,
+        height,
+        0,
+        0,
+        width,
+        height
+      );
+
+      // Create hold card
+      const card = document.createElement('div');
+      card.className = 'hold-card';
+      card.innerHTML = `
+        <img src="${tempCanvas.toDataURL()}" alt="Hold">
+        <div class="usage-count">${climbIds.length} climbs</div>
+      `;
+
+      // Add click handler
+      card.addEventListener('click', () => {
+        this.selectedHold = holdId;
+        this.drawHeatmap();
+        this.updateHoldInfo(holdId);
+      });
+
+      topHoldsGrid.appendChild(card);
+    });
   }
 }
 

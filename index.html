@@ -93,13 +93,18 @@
       <div class="info-panel">
         <div id="holdInfo" class="hold-info">
           <h3>Hold Information</h3>
-          <p>Click on a hold to see details</p>
+          <p id="holdInstructions">Click on a hold to see details</p>
           <div id="holdDetails" style="display: none;">
+            <div id="selectedHoldImage" class="selected-hold-image"></div>
             <h4>Hold Usage</h4>
             <p id="holdUsageCount"></p>
             <h4>Climbs Using This Hold</h4>
             <div id="climbsList" class="climbs-list"></div>
           </div>
+        </div>
+        <div id="topHolds" class="top-holds">
+          <h3>Top Holds</h3>
+          <div id="topHoldsGrid" class="top-holds-grid"></div>
         </div>
       </div>
     </div>
