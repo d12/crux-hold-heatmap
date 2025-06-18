@@ -195,6 +195,19 @@ canvas {
   overflow: hidden;
   border: 1px solid #ddd;
   background-color: white;
+  position: relative;
+}
+
+.selected-hold-image .usage-count {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 3px;
+  font-size: 11px;
+  text-align: center;
 }
 
 .selected-hold-image img {
@@ -532,6 +545,7 @@ canvas {
   max-width: 90%;
   text-align: center;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  position: relative;
 }
 
 .mobile-warning-content h2 {
@@ -545,10 +559,192 @@ canvas {
   margin: 0;
   font-size: 16px;
   line-height: 1.5;
+  margin-bottom: 20px;
+}
+
+.copy-url-section {
+  display: flex;
+  gap: 8px;
+  margin-top: 20px;
+  justify-content: center;
+}
+
+.copy-url-section input {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  background-color: #f8f9fa;
+  color: #666;
+  text-align: center;
+}
+
+.copy-url-button {
+  padding: 8px 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.copy-url-button:hover {
+  background-color: #0056b3;
+}
+
+.copy-url-button.copied {
+  background-color: #28a745;
+}
+
+.dismiss-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 30px;
+  height: 30px;
+  border: none;
+  background: none;
+  font-size: 24px;
+  color: #666;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+}
+
+.dismiss-button:hover {
+  background-color: #f0f0f0;
+  color: #333;
 }
 
 @media (min-width: 768px) {
   .mobile-warning {
     display: none !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .wall-grid {
+    max-height: 50vh;
+    overflow-y: auto;
+    padding-bottom: 20px;
+  }
+
+  .visualization-section {
+    flex-direction: column;
+  }
+
+  .canvas-container {
+    order: 1;
+    height: auto;
+    min-height: 0;
+  }
+
+  .info-panel {
+    order: 2;
+    width: 100%;
+    height: auto;
+    max-height: 50vh;
+    overflow-y: auto;
+  }
+
+  .controls {
+    order: 2;
+  }
+
+  .hold-info {
+    order: 1;
+  }
+
+  .top-holds {
+    order: 3;
+  }
+}
+
+.hold-stats {
+  background-color: #f8f9fa;
+  border-radius: 4px;
+  padding: 12px;
+  margin-bottom: 15px;
+  border: 1px solid #ddd;
+  padding-top: 0;
+}
+
+.hold-header {
+  display: flex;
+  gap: 15px;
+  align-items: flex-start;
+  margin-bottom: 15px;
+}
+
+.hold-header .selected-hold-image {
+  margin-bottom: 0;
+  flex-shrink: 0;
+}
+
+.hold-header .hold-stats {
+  flex: 1;
+  margin-bottom: 0;
+}
+
+.stat-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.stat-label {
+  color: #666;
+  font-size: 14px;
+}
+
+.stat-value {
+  font-weight: 500;
+  color: #333;
+  font-size: 16px;
+}
+
+@media (max-width: 767px) {
+  .hold-header {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .hold-header .hold-stats {
+    width: 100%;
+  }
+
+  .hold-info {
+    padding: 15px;
+    padding-top: 0;
+  }
+
+  .hold-stats {
+    margin: 10px 0;
+  }
+
+  .stat-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .stat-value {
+    font-size: 18px;
+  }
+
+  #holdInstructions {
+    margin-bottom: 10px;
+  }
+
+  .selected-hold-image {
+    margin: 0;
   }
 }

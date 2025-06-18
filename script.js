@@ -28,6 +28,7 @@ class HeatmapVisualizer {
     this.updateGradientLegend();
 
     this.setupEventListeners();
+    this.setupMobileWarning();
   }
 
   setupEventListeners() {
@@ -59,6 +60,30 @@ class HeatmapVisualizer {
     scalingSelect.addEventListener('change', (e) => {
       this.scaling = e.target.value;
       this.drawHeatmap();
+    });
+  }
+
+  setupMobileWarning() {
+    const copyButton = document.getElementById('copyUrlButton');
+    const urlInput = document.getElementById('desktopUrl');
+    const dismissButton = document.getElementById('dismissWarning');
+
+    copyButton.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(urlInput.value);
+        copyButton.textContent = 'Copied!';
+        copyButton.classList.add('copied');
+        setTimeout(() => {
+          copyButton.textContent = 'Copy URL';
+          copyButton.classList.remove('copied');
+        }, 2000);
+      } catch (err) {
+        console.error('Failed to copy URL:', err);
+      }
+    });
+
+    dismissButton.addEventListener('click', () => {
+      document.getElementById('mobileWarning').style.display = 'none';
     });
   }
 
@@ -501,11 +526,9 @@ class HeatmapVisualizer {
     const x = (e.clientX - rect.left) * scaleX;
     const y = (e.clientY - rect.top) * scaleY;
 
-    const clickedHold = this.findHoldAtPoint(x, y);
-    this.selectedHold = clickedHold;
-
-    this.drawHeatmap();
-    this.updateHoldInfo(clickedHold);
+    const hold = this.findHoldAtPoint(x, y);
+    this.selectedHold = hold;
+    this.updateHoldInfo(hold);
   }
 
   findHoldAtPoint(x, y) {
@@ -552,93 +575,82 @@ class HeatmapVisualizer {
   }
 
   updateHoldInfo(holdId) {
-    const holdDetails = document.getElementById('holdDetails');
-    const climbsList = document.getElementById('climbsList');
+    const holdInfo = document.getElementById('holdInfo');
     const holdInstructions = document.getElementById('holdInstructions');
     const selectedHoldImage = document.getElementById('selectedHoldImage');
+    const holdDetails = document.getElementById('holdDetails');
+    const climbsList = document.getElementById('climbsList');
 
-    if (holdId) {
-      const climbIds = this.holdUsage.get(holdId);
-
-      if (!climbIds) return;
-
-      // Hide instructions and show details
-      holdInstructions.style.display = 'none';
-      holdDetails.style.display = 'block';
-
-      // Update hold image
-      const holdData = this.holdPositions.get(holdId);
-      if (holdData && holdData.mask) {
-        const bounds = this.calculateBoundingBox(holdData.mask);
-        const padding = 20;
-
-        // Create a temporary canvas to extract the hold image
-        const tempCanvas = document.createElement('canvas');
-        const tempCtx = tempCanvas.getContext('2d');
-        const width = bounds.maxX - bounds.minX + padding * 2;
-        const height = bounds.maxY - bounds.minY + padding * 2;
-        tempCanvas.width = width;
-        tempCanvas.height = height;
-
-        // Draw the hold with padding
-        tempCtx.drawImage(
-          this.image,
-          bounds.minX - padding,
-          bounds.minY - padding,
-          width,
-          height,
-          0,
-          0,
-          width,
-          height
-        );
-
-        selectedHoldImage.innerHTML = `<img src="${tempCanvas.toDataURL()}" alt="Selected hold" style="width: 100%; height: 100%; object-fit: contain;">`;
-        selectedHoldImage.style.display = 'grid';
-        document.getElementById('holdInfoHeader').textContent = `Selected Hold:`;
-      }
-
-      climbsList.innerHTML = '';
-
-      climbIds.forEach(climbId => {
-        const climb = this.climbs.get(climbId);
-
-        if (climb) {
-          const climbItem = document.createElement('a');
-          climbItem.href = `https://www.cruxapp.ca/app/gyms/${climb.gym_slug}/climbs/${climbId}`;
-          climbItem.target = '_blank';
-          climbItem.className = 'climb-item';
-
-          const img = document.createElement('img');
-          img.src = climb.image_url;
-          img.alt = climb.name || `Climb ${climbId}`;
-          img.className = 'climb-image';
-
-          const info = document.createElement('div');
-          info.className = 'climb-info';
-
-          const name = document.createElement('div');
-          name.className = 'climb-name';
-          name.textContent = climb.name || `Climb ${climbId}`;
-
-          const date = document.createElement('div');
-          date.className = 'climb-date';
-          date.textContent = new Date(climb.created_at).toLocaleDateString();
-
-          info.appendChild(name);
-          info.appendChild(date);
-          climbItem.appendChild(img);
-          climbItem.appendChild(info);
-          climbsList.appendChild(climbItem);
-        }
-      });
-    } else {
-      holdDetails.style.display = 'none';
+    if (!holdId) {
       holdInstructions.style.display = 'block';
-      selectedHoldImage.innerHTML = '';
-      document.getElementById('holdInfoHeader').textContent = `Hold Information`;
       selectedHoldImage.style.display = 'none';
+      holdDetails.style.display = 'none';
+      document.getElementById('holdInfoHeader').textContent = 'Hold Information';
+      return;
     }
+
+    const holdData = this.holdPositions.get(holdId);
+    if (!holdData || !holdData.mask) return;
+
+    const usageCount = this.holdUsage.get(holdId)?.length || 0;
+    selectedHoldImage.querySelector('.usage-count').textContent = `${usageCount} climb${usageCount !== 1 ? 's' : ''}`;
+
+    // Show hold image
+    const bounds = this.calculateBoundingBox(holdData.mask);
+    const padding = 20;
+
+    // Create a temporary canvas to extract the hold image
+    const tempCanvas = document.createElement('canvas');
+    const tempCtx = tempCanvas.getContext('2d');
+    const width = bounds.maxX - bounds.minX + padding * 2;
+    const height = bounds.maxY - bounds.minY + padding * 2;
+    tempCanvas.width = width;
+    tempCanvas.height = height;
+
+    // Draw the hold with padding
+    tempCtx.drawImage(
+      this.image,
+      bounds.minX - padding,
+      bounds.minY - padding,
+      width,
+      height,
+      0,
+      0,
+      width,
+      height
+    );
+
+    selectedHoldImage.innerHTML = `
+      <img src="${tempCanvas.toDataURL()}" alt="Selected hold" style="width: 100%; height: 100%; object-fit: contain;">
+      <div class="usage-count">${usageCount} climb${usageCount !== 1 ? 's' : ''}</div>
+    `;
+    selectedHoldImage.style.display = 'grid';
+    document.getElementById('holdInfoHeader').textContent = 'Selected Hold:';
+
+    // Show climbs using this hold
+    const climbIds = this.holdUsage.get(holdId) || [];
+    climbsList.innerHTML = '';
+
+    climbIds.forEach(climbId => {
+      const climb = this.climbs.get(climbId);
+      if (!climb) return;
+
+      const climbItem = document.createElement('a');
+      climbItem.href = `https://www.cruxapp.ca/app/gyms/${climb.gym_slug}/climbs/${climbId}`;
+      climbItem.target = '_blank';
+      climbItem.className = 'climb-item';
+      climbItem.innerHTML = `
+        <img src="${climb.image_url}" alt="Climb preview" class="climb-image">
+        <div class="climb-info">
+          <div class="climb-name">${climb.name || `Climb ${climbId}`}</div>
+          <div class="climb-date">${new Date(climb.created_at).toLocaleDateString()}</div>
+        </div>
+      `;
+      climbsList.appendChild(climbItem);
+    });
+
+    holdInstructions.style.display = 'none';
+    holdDetails.style.display = 'block';
   }
 
   startOver() {

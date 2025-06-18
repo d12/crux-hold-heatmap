@@ -11,8 +11,13 @@
 <body>
   <div id="mobileWarning" class="mobile-warning" style="display: none;">
     <div class="mobile-warning-content">
+      <button id="dismissWarning" class="dismiss-button">×</button>
       <h2>⚠️ Mobile Not Supported</h2>
       <p>This tool is designed for desktop use only. Please visit on a computer for the best experience.</p>
+      <div class="copy-url-section">
+        <input type="text" id="desktopUrl" value="https://d12.github.io/crux-hold-heatmap/" readonly>
+        <button id="copyUrlButton" class="copy-url-button">Copy URL</button>
+      </div>
     </div>
   </div>
   <div class="container">
@@ -102,8 +107,12 @@
         <div id="holdInfo" class="hold-info">
           <h3 id="holdInfoHeader">Hold Information</h3>
           <p id="holdInstructions">Click on a hold to see details</p>
-          <div id="selectedHoldImage" class="selected-hold-image" style="display: none;"></div>
           <div id="holdDetails" style="display: none;">
+            <div class="hold-header">
+              <div id="selectedHoldImage" class="selected-hold-image">
+                <div class="usage-count">0 climbs</div>
+              </div>
+            </div>
             <h4>Climbs Using This Hold</h4>
             <div id="climbsList" class="climbs-list"></div>
           </div>
